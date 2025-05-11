@@ -1,0 +1,27 @@
+```{r}
+library(tidyverse)
+
+#install.packages("crosstable")
+
+library(crosstable)
+library(haven)
+
+severe_analysis <- read.csv("//cdc/project/NCIPC_DOP_OD2A/DOSE/DOSE Papers/ED_Symptoms/SAS/Datasets/severe_analysis_clean.csv")
+
+#severe_analysis_sas <- read_sas("//cdc/project/NCIPC_DOP_OD2A/DOSE/DOSE Papers/ED_Symptoms/SAS/Datasets/severe_analysis_clean.sas7bdat")
+
+analysis <- severe_analysis %>%
+  group_by(race_eth_clean)%>%
+  summarize_at(c("severeopioid", "denominator"), sum)%>%
+  ungroup()%>%
+  mutate(
+    rate = round(severeopioid/denominator*100,2),
+    not_severe = denominator-severeopioid,
+    rev_rate = round((1-(severeopioid/denominator))*100,2)
+  )
+
+
+
+data_test <- read_sas("//cdc.gov/project/NCIPC_DOP_OD2A/DOSE/DOSE Papers/ED_Symptoms/SAS/Datasets/opioid_jan18sep22_all.sas7bdat")
+
+```
